@@ -4,6 +4,10 @@ const cors = require('cors');
 const path = require('path');
 const { PrismaClient } = require('@prisma/client');
 
+if (!process.env.DATABASE_URL) {
+    process.env.DATABASE_URL = "postgres://88ae43b30a7b9f677aec1aed530416cafe3e518395fc43cb3f889b7973393eb7:sk_Z3Dk_HmmVNDLVDx0flGf_@db.prisma.io:5432/postgres?sslmode=require";
+}
+
 const app = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 8080;
@@ -145,14 +149,19 @@ app.delete('/api/certificates/:enrollmentNo', async (req, res) => {
 });
 
 // Frontend Routing shortcuts
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/verify', (req, res) => res.sendFile(path.join(__dirname, 'verify.html')));
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'login.html')));
 
-// Start server
-app.listen(PORT, async () => {
-    console.log(`=========================================`);
-    console.log(` K.I.M.T Server running on http://localhost:${PORT}`);
-    console.log(` Prisma Postgres Connected`);
-    console.log(`=========================================`);
-});
+// Start server when run directly
+if (require.main === module || !process.env.VERCEL) {
+    app.listen(PORT, async () => {
+        console.log(`=========================================`);
+        console.log(` K.I.M.T Server running on http://localhost:${PORT}`);
+        console.log(` Prisma Postgres Connected`);
+        console.log(`=========================================`);
+    });
+}
+
+module.exports = app;
