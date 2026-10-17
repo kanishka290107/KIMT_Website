@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K.I.M.T Computer Classes | Build Your Digital Future</title>
+    <!-- Tailwind CSS for Modern Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        indigo: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Styles for Effects not easily done in inline Tailwind */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .course-card:hover .course-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .course-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .hero-bg {
+            background-image: radial-gradient(circle at top right, #e0e7ff, transparent 40%),
+                              radial-gradient(circle at bottom left, #eef2ff, transparent 40%);
+        }
+
+        /* Smooth scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c7d2fe; 
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1; 
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 bg-gray-50 selection:bg-indigo-500 selection:text-white">
+
+    <!-- Navigation Bar -->
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer">
+                    <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/40">
+                        <span class="text-white font-bold text-xl">K</span>
+                    </div>
+                    <span class="font-extrabold text-2xl text-gray-900 tracking-tight">K.I.M.T<span class="text-indigo-600">.</span></span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-7">
+                    <a href="#home" class="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Home</a>
+                    <a href="#courses" class="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Courses</a>
+                    <a href="#facilities" class="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Facilities</a>
+                    <a href="verify.html" class="text-indigo-600 hover:text-indigo-700 font-semibold transition-colors flex items-center gap-1.5 bg-indigo-50 px-3.5 py-1.5 rounded-full border border-indigo-100">
+                        <i class="fas fa-certificate text-indigo-500"></i> Verify Certificate
+                    </a>
+                    <a href="#contact" class="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Contact</a>
+                    <a href="login.html" class="text-gray-500 hover:text-indigo-600 text-sm font-semibold transition-colors flex items-center gap-1">
+                        <i class="fas fa-user-lock text-xs"></i> Admin
+                    </a>
+                    <a href="#contact" class="bg-indigo-600 text-white px-6 py-2.5 rounded-full font-medium hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/30 transition-all transform hover:-translate-y-0.5">
+                        Enroll Now
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center gap-3">
+                    <a href="verify.html" class="text-indigo-600 text-xs font-bold bg-indigo-50 px-3 py-1.5 rounded-full border border-indigo-100 flex items-center gap-1">
+                        <i class="fas fa-certificate"></i> Verify
+                    </a>
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-indigo-600 focus:outline-none p-2">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full shadow-xl">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#home" class="block px-3 py-3 text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">Home</a>
+                <a href="#courses" class="block px-3 py-3 text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">Courses</a>
+                <a href="#facilities" class="block px-3 py-3 text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">Facilities</a>
+                <a href="verify.html" class="block px-3 py-3 text-base font-semibold text-indigo-600 bg-indigo-50/50 rounded-lg transition-colors flex items-center gap-2">
+                    <i class="fas fa-certificate text-indigo-500"></i> Verify Certificate
+                </a>
+                <a href="#contact" class="block px-3 py-3 text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">Contact</a>
+                <a href="login.html" class="block px-3 py-3 text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors flex items-center gap-2">
+                    <i class="fas fa-lock text-sm"></i> Admin Login
+                </a>
+                <div class="pt-2">
+                    <a href="#contact" class="block w-full text-center bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors">Enroll Now</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden hero-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+                
+                <!-- Hero Text -->
+                <div class="max-w-2xl animate-fade-in-up">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-indigo-100 text-indigo-700 font-medium text-sm mb-6 shadow-sm">
+                        <span class="relative flex h-2.5 w-2.5">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-500"></span>
+                        </span>
+                        Admissions Open for 2026 Batch
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 mb-6 leading-[1.15]">
+                        Build Your <br class="hidden lg:block" />
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Digital Future</span> <br class="hidden lg:block" />
+                        with K.I.M.T
+                    </h1>
+                    
+                    <p class="text-lg sm:text-xl text-gray-600 mb-8 leading-relaxed max-w-lg">
+                        Empowering students with industry-ready skills. From basic computing to advanced AI and web development, we provide practical, hands-on training for the modern tech landscape.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#courses" class="inline-flex justify-center items-center px-8 py-4 text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-full shadow-lg shadow-indigo-500/30 transition-all transform hover:-translate-y-1">
+                            Explore courses
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                        <a href="#contact" class="inline-flex justify-center items-center px-8 py-4 text-base font-semibold text-gray-700 bg-white border-2 border-gray-200 hover:border-indigo-600 hover:text-indigo-600 rounded-full transition-all hover:-translate-y-1">
+                            Contact Us
+                        </a>
+                    </div>
+                    
+                    <!-- Trust Indicators -->
+                    <div class="mt-10 flex flex-wrap items-center gap-6 text-sm text-gray-600 font-medium">
+                        <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg shadow-sm border border-gray-100">
+                            <i class="fas fa-chalkboard-teacher text-indigo-500 text-lg"></i> Expert Faculty
+                        </div>
+                        <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg shadow-sm border border-gray-100">
+                            <i class="fas fa-laptop-code text-indigo-500 text-lg"></i> Hands-on Projects
+                        </div>
+                        <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg shadow-sm border border-gray-100">
+                            <i class="fas fa-certificate text-indigo-500 text-lg"></i> Certified Courses
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hero Image -->
+                <div class="relative lg:ml-auto animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <!-- Decorative background blur blobs -->
+                    <div class="absolute -top-4 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40"></div>
+                    <div class="absolute top-10 -right-4 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40"></div>
+                    <div class="absolute -bottom-8 left-20 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40"></div>
+                    
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-indigo-900/20 border-4 border-white bg-white">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Students collaborating at K.I.M.T" class="w-full object-cover h-[450px] lg:h-[550px] transform hover:scale-105 transition-transform duration-700">
+                        
+                        <!-- Floating Badge -->
+                        <div class="absolute bottom-6 left-6 right-6 sm:right-auto bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white flex items-center gap-4 transform hover:-translate-y-1 transition-transform">
+                            <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 text-xl flex-shrink-0">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 font-medium">Rated 4.9/5 by</p>
+                                <p class="font-bold text-gray-900">500+ Happy Students</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                <h2 class="text-indigo-600 font-bold tracking-wider uppercase text-sm mb-3">Our Curriculum</h2>
+                <h3 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6">Explore Our Cutting-Edge Courses</h3>
+                <p class="text-gray-600 text-lg">Carefully crafted programs designed to take you from absolute beginner to industry professional.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Course 1 -->
+                <div class="course-card bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:border-indigo-100 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 group reveal">
+                    <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 course-icon group-hover:bg-blue-600 transition-colors duration-300">
+                        <i class="fas fa-desktop text-3xl text-blue-600 group-hover:text-white"></i>
+                    </div>
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-indigo-600 transition-colors">Basic Computer</h4>
+                    <p class="text-gray-600 mb-6 text-sm leading-relaxed min-h-[40px]">Essential skills for the digital age. Perfect for beginners and office professionals.</p>
+                    <ul class="space-y-3 text-sm text-gray-600 mb-8 font-medium">
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> MS Office Suite</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> MS PowerPoint & Excel</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> WordPad & NotePad</li>
+                    </ul>
+                    <a href="#contact" class="inline-block w-full text-center bg-gray-50 text-indigo-600 font-semibold py-3 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">Enroll Now</a>
+                </div>
+
+                <!-- Course 2 -->
+                <div class="course-card bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:border-indigo-100 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 group reveal" style="transition-delay: 100ms;">
+                    <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center mb-6 course-icon group-hover:bg-purple-600 transition-colors duration-300">
+                        <i class="fas fa-code text-3xl text-purple-600 group-hover:text-white"></i>
+                    </div>
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-indigo-600 transition-colors">Programming</h4>
+                    <p class="text-gray-600 mb-6 text-sm leading-relaxed min-h-[40px]">Build strong logic and master the most in-demand programming languages.</p>
+                    <ul class="space-y-3 text-sm text-gray-600 mb-8 font-medium">
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> C++ Programming</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> Java Development</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> Python mastery</li>
+                    </ul>
+                    <a href="#contact" class="inline-block w-full text-center bg-gray-50 text-indigo-600 font-semibold py-3 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">Enroll Now</a>
+                </div>
+
+                <!-- Course 3 -->
+                <div class="course-card bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:border-indigo-100 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 group reveal" style="transition-delay: 200ms;">
+                    <div class="relative">
+                        <div class="absolute -top-2 -right-2 bg-gradient-to-r from-pink-500 to-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md animate-pulse">TRENDING</div>
+                        <div class="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6 course-icon group-hover:bg-indigo-600 transition-colors duration-300">
+                            <i class="fas fa-robot text-3xl text-indigo-600 group-hover:text-white"></i>
+                        </div>
+                    </div>
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-indigo-600 transition-colors">AI & Prompting</h4>
+                    <p class="text-gray-600 mb-6 text-sm leading-relaxed min-h-[40px]">Step into the future. Learn to harness AI to 10x your productivity.</p>
+                    <ul class="space-y-3 text-sm text-gray-600 mb-8 font-medium">
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> AI Fundamentals</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> Prompt Engineering</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> Automation with AI</li>
+                    </ul>
+                    <a href="#contact" class="inline-block w-full text-center bg-gray-50 text-indigo-600 font-semibold py-3 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">Enroll Now</a>
+                </div>
+
+                <!-- Course 4 -->
+                <div class="course-card bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:border-indigo-100 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 group reveal">
+                    <div class="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center mb-6 course-icon group-hover:bg-teal-600 transition-colors duration-300">
+                        <i class="fas fa-globe text-3xl text-teal-600 group-hover:text-white"></i>
+                    </div>
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-indigo-600 transition-colors">Web Development</h4>
+                    <p class="text-gray-600 mb-6 text-sm leading-relaxed min-h-[40px]">Create stunning, responsive websites and web applications from scratch.</p>
+                    <ul class="space-y-3 text-sm text-gray-600 mb-8 font-medium">
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> HTML & CSS Styling</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> Responsive Design</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> Master Website Dev with AI</li>
+                    </ul>
+                    <a href="#contact" class="inline-block w-full text-center bg-gray-50 text-indigo-600 font-semibold py-3 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">Enroll Now</a>
+                </div>
+
+                <!-- Course 5 -->
+                <div class="course-card bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:border-indigo-100 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 group reveal" style="transition-delay: 100ms;">
+                    <div class="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mb-6 course-icon group-hover:bg-orange-600 transition-colors duration-300">
+                        <i class="fas fa-cube text-3xl text-orange-600 group-hover:text-white"></i>
+                    </div>
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-indigo-600 transition-colors">3D & Animation</h4>
+                    <p class="text-gray-600 mb-6 text-sm leading-relaxed min-h-[40px]">Bring your imagination to life with industry-standard 3D modeling tools.</p>
+                    <ul class="space-y-3 text-sm text-gray-600 mb-8 font-medium">
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> 3D Modeling</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> 3D Animation</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> Texturing & Rendering</li>
+                    </ul>
+                    <a href="#contact" class="inline-block w-full text-center bg-gray-50 text-indigo-600 font-semibold py-3 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">Enroll Now</a>
+                </div>
+
+                <!-- Course 6 -->
+                <div class="course-card bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:border-indigo-100 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 group reveal" style="transition-delay: 200ms;">
+                    <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-6 course-icon group-hover:bg-rose-600 transition-colors duration-300">
+                        <i class="fas fa-award text-3xl text-rose-600 group-hover:text-white"></i>
+                    </div>
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-indigo-600 transition-colors">Certifications</h4>
+                    <p class="text-gray-600 mb-6 text-sm leading-relaxed min-h-[40px]">Get certified to boost your resume for government and private sector jobs.</p>
+                    <ul class="space-y-3 text-sm text-gray-600 mb-8 font-medium">
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> CCC (Course on Computer Concepts)</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> Exam Preparation</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-indigo-500"></i> Mock Tests</li>
+                    </ul>
+                    <a href="#contact" class="inline-block w-full text-center bg-gray-50 text-indigo-600 font-semibold py-3 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">Enroll Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Facilities Section -->
+    <section id="facilities" class="py-24 bg-indigo-900 text-white relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 32px 32px;"></div>
+        <!-- Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-indigo-900 to-indigo-950 opacity-90"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <h2 class="inline-block px-4 py-1.5 rounded-full bg-indigo-800 text-indigo-200 font-semibold tracking-wide text-sm mb-6 border border-indigo-700">Why Choose Us?</h2>
+                    <h3 class="text-3xl md:text-5xl font-bold mb-6 leading-tight">Premium Facilities for Optimal Learning</h3>
+                    <p class="text-indigo-200 text-lg mb-10 leading-relaxed max-w-lg">
+                        We believe the right environment accelerates learning. Our institute is equipped with state-of-the-art infrastructure to ensure every student gets hands-on practical exposure.
+                    </p>
+                    
+                    <div class="space-y-8">
+                        <div class="flex gap-5 group">
+                            <div class="w-14 h-14 bg-indigo-800/50 rounded-2xl flex items-center justify-center flex-shrink-0 border border-indigo-700/50 group-hover:bg-indigo-600 transition-colors duration-300">
+                                <i class="fas fa-desktop text-indigo-300 text-2xl group-hover:text-white transition-colors"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Modern Computer Labs</h4>
+                                <p class="text-indigo-300 text-sm leading-relaxed">High-performance PCs equipped with the latest software versions and high-speed broadband internet.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-5 group">
+                            <div class="w-14 h-14 bg-indigo-800/50 rounded-2xl flex items-center justify-center flex-shrink-0 border border-indigo-700/50 group-hover:bg-indigo-600 transition-colors duration-300">
+                                <i class="fas fa-user-tie text-indigo-300 text-2xl group-hover:text-white transition-colors"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Industry-Expert Faculty</h4>
+                                <p class="text-indigo-300 text-sm leading-relaxed">Learn from professionals who bring real-world experience and practical insights into the classroom.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-5 group">
+                            <div class="w-14 h-14 bg-indigo-800/50 rounded-2xl flex items-center justify-center flex-shrink-0 border border-indigo-700/50 group-hover:bg-indigo-600 transition-colors duration-300">
+                                <i class="fas fa-briefcase text-indigo-300 text-2xl group-hover:text-white transition-colors"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Career Guidance</h4>
+                                <p class="text-indigo-300 text-sm leading-relaxed">Dedicated support to help you build your portfolio, prepare for interviews, and land your first job.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Collage Images -->
+                <div class="relative reveal h-[500px]">
+                    <div class="absolute top-0 right-0 w-3/4 h-2/3 rounded-3xl overflow-hidden border-4 border-indigo-800 shadow-2xl z-20 hover:scale-105 transition-transform duration-500">
+                        <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Students in lab" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-indigo-900/20"></div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-2/3 h-2/3 rounded-3xl overflow-hidden border-4 border-indigo-900 shadow-2xl z-30 hover:scale-105 transition-transform duration-500">
+                        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Coding screen" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-indigo-900/20"></div>
+                    </div>
+                    
+                    <!-- Floating stats -->
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40 bg-white text-gray-900 py-4 px-6 rounded-2xl shadow-2xl border-4 border-indigo-50 text-center animate-bounce" style="animation-duration: 3s;">
+                        <p class="text-3xl font-extrabold text-indigo-600">10+</p>
+                        <p class="text-xs font-bold uppercase tracking-wider text-gray-500">Years of Trust</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificate Verification Banner -->
+    <section class="py-16 bg-gradient-to-b from-indigo-950 to-indigo-900 text-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="bg-indigo-800/40 border border-indigo-700/50 rounded-3xl p-8 sm:p-12 backdrop-blur-sm flex flex-col lg:flex-row items-center justify-between gap-8 reveal">
+                <div class="max-w-xl text-center lg:text-left">
+                    <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold text-xs mb-3 border border-emerald-400/30">
+                        <i class="fas fa-check-circle"></i> 100% Genuine & Verified
+                    </span>
+                    <h3 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
+                        Verify Your K.I.M.T Certificate Online
+                    </h3>
+                    <p class="text-indigo-200 text-sm sm:text-base leading-relaxed">
+                        Are you an employer or a student? Instantly verify completion certificates and validate official digital credentials using enrollment numbers.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                    <a href="verify.html" class="inline-flex items-center justify-center gap-2 bg-white text-indigo-900 hover:bg-indigo-50 font-bold px-8 py-4 rounded-2xl shadow-xl transition-all transform hover:-translate-y-1">
+                        <i class="fas fa-shield-alt text-indigo-600"></i>
+                        <span>Verify Certificate</span>
+                    </a>
+                    <a href="login.html" class="inline-flex items-center justify-center gap-2 bg-indigo-700/60 hover:bg-indigo-700 text-white font-semibold px-6 py-4 rounded-2xl border border-indigo-400/30 transition-all">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin Login</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Enroll Section -->
+    <section id="contact" class="py-24 bg-gray-50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100/50 overflow-hidden border border-gray-100 reveal">
+                <div class="grid lg:grid-cols-5 h-full">
+                    
+                    <!-- Contact Info Pane -->
+                    <div class="lg:col-span-2 bg-gradient-to-br from-indigo-600 to-indigo-800 p-10 lg:p-14 text-white relative overflow-hidden flex flex-col justify-between">
+                        <!-- Decor -->
+                        <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 blur-2xl"></div>
+                        <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full bg-black opacity-20 blur-2xl"></div>
+                        
+                        <div class="relative z-10">
+                            <h3 class="text-3xl font-bold mb-4 text-white">Let's Talk</h3>
+                            <p class="text-indigo-100 mb-12 text-sm leading-relaxed">Ready to transform your career? Drop us a message to learn more about batches, fees, and enrollment details.</p>
+                            
+                            <div class="space-y-8">
+                                <div class="flex items-start gap-5">
+                                    <div class="w-10 h-10 rounded-full bg-indigo-500/30 flex items-center justify-center flex-shrink-0 mt-1">
+                                        <i class="fas fa-map-marker-alt text-indigo-100 text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-white mb-1">Visit Us</h5>
+                                        <p class="text-indigo-200 text-sm">Tech Hub Building, Main Street,<br>City Center, 123456</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-5">
+                                    <div class="w-10 h-10 rounded-full bg-indigo-500/30 flex items-center justify-center flex-shrink-0 mt-1">
+                                        <i class="fas fa-phone-alt text-indigo-100 text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-white mb-1">Call Us</h5>
+                                        <p class="text-indigo-200 text-sm">+91 98765 43210<br>+91 12345 67890</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-5">
+                                    <div class="w-10 h-10 rounded-full bg-indigo-500/30 flex items-center justify-center flex-shrink-0 mt-1">
+                                        <i class="fas fa-envelope text-indigo-100 text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-white mb-1">Email Us</h5>
+                                        <p class="text-indigo-200 text-sm">admissions@kimt.edu<br>info@kimt.edu</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative z-10 mt-16 pt-8 border-t border-indigo-500/30">
+                            <h6 class="text-sm font-semibold mb-4 text-indigo-100">Connect with us</h6>
+                            <div class="flex gap-4">
+                                <a href="#" class="w-10 h-10 rounded-full bg-indigo-500/30 flex items-center justify-center hover:bg-white hover:text-indigo-600 transition-all duration-300 transform hover:-translate-y-1"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-indigo-500/30 flex items-center justify-center hover:bg-white hover:text-indigo-600 transition-all duration-300 transform hover:-translate-y-1"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-indigo-500/30 flex items-center justify-center hover:bg-white hover:text-indigo-600 transition-all duration-300 transform hover:-translate-y-1"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-indigo-500/30 flex items-center justify-center hover:bg-white hover:text-indigo-600 transition-all duration-300 transform hover:-translate-y-1"><i class="fab fa-youtube"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Pane -->
+                    <div class="lg:col-span-3 p-10 lg:p-14 bg-white">
+                        <h3 class="text-3xl font-extrabold text-gray-900 mb-2">Enroll Now</h3>
+                        <p class="text-gray-500 mb-8">Fill out the form below and our counselor will call you back.</p>
+                        
+                        <form class="space-y-6" onsubmit="event.preventDefault(); alert('Thank you for your interest! We will contact you soon.');">
+                            <div class="grid sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">First Name *</label>
+                                    <input type="text" required class="w-full px-5 py-3.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition-all" placeholder="John">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Last Name</label>
+                                    <input type="text" class="w-full px-5 py-3.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition-all" placeholder="Doe">
+                                </div>
+                            </div>
+                            <div class="grid sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
+                                    <input type="email" required class="w-full px-5 py-3.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition-all" placeholder="john@example.com">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number *</label>
+                                    <input type="tel" required class="w-full px-5 py-3.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition-all" placeholder="+91 XXXX XXXXX">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Course Interested In *</label>
+                                <div class="relative">
+                                    <select required class="w-full px-5 py-3.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition-all appearance-none cursor-pointer">
+                                        <option value="" disabled selected>Select a course</option>
+                                        <option>Basic Computer</option>
+                                        <option>Programming (C++, Java, Python)</option>
+                                        <option>Web Development</option>
+                                        <option>AI & Prompt Engineering</option>
+                                        <option>3D Modeling & Animation</option>
+                                        <option>CCC Certification</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-gray-500">
+                                        <i class="fas fa-chevron-down text-sm"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Message (Optional)</label>
+                                <textarea rows="3" class="w-full px-5 py-3.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition-all resize-none" placeholder="Any specific requirements or questions?"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-gray-900 text-white font-bold text-lg py-4 rounded-xl shadow-lg hover:bg-indigo-600 transition-colors duration-300 transform hover:-translate-y-1 active:translate-y-0 flex justify-center items-center gap-2">
+                                Request Callback <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div class="lg:col-span-1">
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">K</span>
+                        </div>
+                        <span class="font-extrabold text-2xl text-white tracking-tight">K.I.M.T<span class="text-indigo-500">.</span></span>
+                    </div>
+                    <p class="text-sm mb-6 leading-relaxed">Empowering the next generation of tech professionals with cutting-edge skills and practical knowledge.</p>
+                </div>
+                
+                <div>
+                    <h6 class="text-white font-bold mb-6 uppercase tracking-wider text-sm">Quick Links</h6>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="#home" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fas fa-angle-right text-xs"></i> Home</a></li>
+                        <li><a href="#courses" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fas fa-angle-right text-xs"></i> All Courses</a></li>
+                        <li><a href="verify.html" class="text-indigo-400 hover:text-white font-medium transition-colors flex items-center gap-2"><i class="fas fa-certificate text-xs"></i> Verify Certificate</a></li>
+                        <li><a href="#facilities" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fas fa-angle-right text-xs"></i> Facilities</a></li>
+                        <li><a href="#contact" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fas fa-angle-right text-xs"></i> Contact Us</a></li>
+                        <li><a href="login.html" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fas fa-lock text-xs"></i> Admin Portal</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h6 class="text-white font-bold mb-6 uppercase tracking-wider text-sm">Top Courses</h6>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="#courses" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fas fa-angle-right text-xs"></i> Master Web Dev with AI</a></li>
+                        <li><a href="#courses" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fas fa-angle-right text-xs"></i> Python Programming</a></li>
+                        <li><a href="#courses" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fas fa-angle-right text-xs"></i> 3D Animation</a></li>
+                        <li><a href="#courses" class="hover:text-indigo-400 transition-colors flex items-center gap-2"><i class="fas fa-angle-right text-xs"></i> Prompt Engineering</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h6 class="text-white font-bold mb-6 uppercase tracking-wider text-sm">Newsletter</h6>
+                    <p class="text-sm mb-4">Subscribe to get updates on new batches and tech news.</p>
+                    <form class="flex" onsubmit="event.preventDefault();">
+                        <input type="email" placeholder="Your email" class="w-full px-4 py-2 rounded-l-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-indigo-500">
+                        <button type="submit" class="bg-indigo-600 px-4 py-2 rounded-r-lg text-white hover:bg-indigo-700 transition-colors"><i class="fas fa-arrow-right"></i></button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
+                <p>&copy; 2026 K.I.M.T Computer Classes. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu on link click
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // Navbar styling on scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-md');
+                navbar.classList.add('py-0');
+            } else {
+                navbar.classList.remove('shadow-md');
+                navbar.classList.remove('py-0');
+            }
+        });
+
+        // Scroll Reveal Animation (Intersection Observer for better performance)
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach((element) => {
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>
