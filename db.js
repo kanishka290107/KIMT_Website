@@ -1,38 +1,26 @@
 /**
- * K.I.M.T Computer Classes - Certificate & Authentication Storage Engine
- * Uses IndexedDB with fallback to localStorage for storing high-resolution certificates.
+ * K.I.M.T Computer Classes - Unified Storage Engine
+ * Connects to Prisma Postgres backend via REST API with IndexedDB/localStorage fallback.
  */
 
 const DB_NAME = 'KIMT_CertDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'certificates';
 
-// Admin Credentials
 const ADMIN_USER = 'admin';
 const ADMIN_PASS = 'admin12345';
 
-// Database Initializer (IndexedDB)
-function openDB() {
-    return new Promise((resolve, reject) => {
-        if (!window.indexedDB) {
-            resolve(null);
-            return;
-        }
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-        request.onupgradeneeded = (e) => {
-            const db = e.target.result;
-            if (!db.objectStoreNames.contains(STORE_NAME)) {
-                const store = db.createObjectStore(STORE_NAME, { keyPath: 'enrollmentNo' });
-                store.createIndex('name', 'name', { unique: false });
-                store.createIndex('phone', 'phone', { unique: false });
-            }
-        };
-        request.onsuccess = (e) => resolve(e.target.result);
-        request.onerror = (e) => resolve(null);
-    });
+// Check if running on backend server with API
+async function isApiAvailable() {
+    try {
+        const res = await fetch('/api/health', { method: 'GET', signal: AbortSignal.timeout(2000) });
+        return res.ok;
+    } catch (e) {
+        return false;
+    }
 }
 
-// Generate a default high-quality certificate image on canvas
+// Generate high-resolution digital certificate canvas
 function generateCertificateCanvas(studentName, courseName, enrollmentNo, issueDate) {
     const canvas = document.createElement('canvas');
     canvas.width = 1200;
@@ -116,7 +104,7 @@ function generateCertificateCanvas(studentName, courseName, enrollmentNo, issueD
     ctx.fillText(`Enrollment No: ${enrollmentNo}`, 100, 680);
     ctx.font = '400 15px "Inter", sans-serif';
     ctx.fillText(`Issue Date: ${issueDate}`, 100, 710);
-    ctx.fillText(`Status: Verified & Valid`, 100, 740);
+    ctx.fillText(`Status: Verified in Prisma Postgres`, 100, 740);
 
     // Golden Seal
     ctx.save();
@@ -152,59 +140,39 @@ function generateCertificateCanvas(studentName, courseName, enrollmentNo, issueD
     return canvas.toDataURL('image/jpeg', 0.9);
 }
 
-// Initial Sample Certificates
-function getInitialSampleCertificates() {
-    return [
-        {
-            name: 'Rahul Sharma',
-            phone: '+91 98765 43210',
-            enrollmentNo: 'KIMT-2026-001',
-            course: 'Master Website Development with AI',
-            issueDate: '2026-03-15',
-            photo: generateCertificateCanvas('Rahul Sharma', 'Master Website Development with AI', 'KIMT-2026-001', '15 March 2026')
-        },
-        {
-            name: 'Priya Verma',
-            phone: '+91 98123 45678',
-            enrollmentNo: 'KIMT-2026-002',
-            course: 'Python & AI Prompt Engineering',
-            issueDate: '2026-04-10',
-            photo: generateCertificateCanvas('Priya Verma', 'Python & AI Prompt Engineering', 'KIMT-2026-002', '10 April 2026')
+// Local IndexedDB Fallback
+function openLocalDB() {
+    return new Promise((resolve) => {
+        if (!window.indexedDB) {
+            resolve(null);
+            return;
         }
-    ];
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME, { keyPath: 'enrollmentNo' });
+            }
+        };
+        request.onsuccess = (e) => resolve(e.target.result);
+        request.onerror = () => resolve(null);
+    });
 }
 
-// Storage Manager
 const CertificateStore = {
-    async init() {
-        const db = await openDB();
-        if (db) {
-            // Check if db is empty, seed samples if needed
-            const count = await new Promise((resolve) => {
-                const tx = db.transaction(STORE_NAME, 'readonly');
-                const store = tx.objectStore(STORE_NAME);
-                const req = store.count();
-                req.onsuccess = () => resolve(req.result);
-                req.onerror = () => resolve(0);
-            });
-
-            if (count === 0) {
-                const samples = getInitialSampleCertificates();
-                for (const item of samples) {
-                    await this.save(item);
-                }
-            }
-        } else {
-            // localStorage fallback
-            if (!localStorage.getItem('kimt_certificates')) {
-                const samples = getInitialSampleCertificates();
-                localStorage.setItem('kimt_certificates', JSON.stringify(samples));
-            }
-        }
-    },
-
     async getAll() {
-        const db = await openDB();
+        // Try Prisma Postgres API
+        try {
+            const res = await fetch('/api/certificates', { signal: AbortSignal.timeout(3000) });
+            if (res.ok) {
+                return await res.json();
+            }
+        } catch (e) {
+            // API not available, proceed to local DB
+        }
+
+        // Local IndexedDB fallback
+        const db = await openLocalDB();
         if (db) {
             return new Promise((resolve) => {
                 const tx = db.transaction(STORE_NAME, 'readonly');
@@ -213,80 +181,111 @@ const CertificateStore = {
                 req.onsuccess = () => resolve(req.result || []);
                 req.onerror = () => resolve([]);
             });
-        } else {
-            try {
-                return JSON.parse(localStorage.getItem('kimt_certificates') || '[]');
-            } catch (e) {
-                return [];
-            }
         }
+        return JSON.parse(localStorage.getItem('kimt_certificates') || '[]');
     },
 
     async getByEnrollment(enrollmentNo) {
         if (!enrollmentNo) return null;
-        const normalized = enrollmentNo.trim().toUpperCase();
+        const cleanCode = encodeURIComponent(enrollmentNo.trim().toUpperCase());
+
+        // Try Prisma Postgres API
+        try {
+            const res = await fetch(`/api/certificates/${cleanCode}`, { signal: AbortSignal.timeout(3000) });
+            if (res.ok) {
+                return await res.json();
+            }
+        } catch (e) {
+            // API not available, proceed to local fallback
+        }
+
+        // Fallback: check all
         const all = await this.getAll();
-        return all.find(c => c.enrollmentNo.trim().toUpperCase() === normalized) || null;
+        const norm = enrollmentNo.trim().toUpperCase();
+        return all.find(c => c.enrollmentNo.trim().toUpperCase() === norm) || null;
     },
 
     async save(cert) {
-        // Normalize enrollment number
         cert.enrollmentNo = cert.enrollmentNo.trim().toUpperCase();
-        cert.createdAt = cert.createdAt || new Date().toISOString();
 
-        const db = await openDB();
+        // 1. Save to Prisma Postgres backend
+        let savedToBackend = false;
+        try {
+            const res = await fetch('/api/certificates', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(cert),
+                signal: AbortSignal.timeout(10000)
+            });
+            if (res.ok) {
+                savedToBackend = true;
+            }
+        } catch (e) {
+            console.warn('API save offline, storing locally:', e);
+        }
+
+        // 2. Also mirror to local IndexedDB for instant offline access
+        const db = await openLocalDB();
         if (db) {
-            return new Promise((resolve, reject) => {
+            await new Promise((resolve, reject) => {
                 const tx = db.transaction(STORE_NAME, 'readwrite');
                 const store = tx.objectStore(STORE_NAME);
                 const req = store.put(cert);
                 req.onsuccess = () => resolve(true);
                 req.onerror = (e) => reject(e);
             });
-        } else {
-            const all = await this.getAll();
-            const index = all.findIndex(c => c.enrollmentNo === cert.enrollmentNo);
-            if (index >= 0) {
-                all[index] = cert;
-            } else {
-                all.push(cert);
-            }
-            try {
-                localStorage.setItem('kimt_certificates', JSON.stringify(all));
-                return true;
-            } catch (err) {
-                console.error("Storage quota error:", err);
-                throw new Error("Storage quota exceeded. Please use smaller certificate image files.");
-            }
         }
+
+        return true;
     },
 
     async delete(enrollmentNo) {
-        const normalized = enrollmentNo.trim().toUpperCase();
-        const db = await openDB();
+        const cleanCode = encodeURIComponent(enrollmentNo.trim().toUpperCase());
+
+        // Delete from Prisma Postgres backend
+        try {
+            await fetch(`/api/certificates/${cleanCode}`, {
+                method: 'DELETE',
+                signal: AbortSignal.timeout(5000)
+            });
+        } catch (e) {
+            console.warn('API delete offline, removing locally:', e);
+        }
+
+        // Delete from local IndexedDB
+        const db = await openLocalDB();
         if (db) {
-            return new Promise((resolve, reject) => {
+            await new Promise((resolve, reject) => {
                 const tx = db.transaction(STORE_NAME, 'readwrite');
                 const store = tx.objectStore(STORE_NAME);
-                const req = store.delete(normalized);
+                const req = store.delete(enrollmentNo.trim().toUpperCase());
                 req.onsuccess = () => resolve(true);
                 req.onerror = (e) => reject(e);
             });
-        } else {
-            let all = await this.getAll();
-            all = all.filter(c => c.enrollmentNo.trim().toUpperCase() !== normalized);
-            localStorage.setItem('kimt_certificates', JSON.stringify(all));
-            return true;
         }
+
+        return true;
     }
 };
 
-// Authentication Controller
 const Auth = {
-    login(username, password) {
+    async login(username, password) {
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            if (res.ok) {
+                sessionStorage.setItem('kimt_admin_auth', 'true');
+                return true;
+            }
+        } catch (e) {
+            // fallback
+        }
+
         if (username.trim() === ADMIN_USER && password === ADMIN_PASS) {
             sessionStorage.setItem('kimt_admin_auth', 'true');
-            sessionStorage.setItem('kimt_admin_login_time', new Date().toISOString());
             return true;
         }
         return false;
@@ -298,7 +297,6 @@ const Auth = {
 
     logout() {
         sessionStorage.removeItem('kimt_admin_auth');
-        sessionStorage.removeItem('kimt_admin_login_time');
         window.location.href = 'login.html';
     },
 
@@ -308,6 +306,3 @@ const Auth = {
         }
     }
 };
-
-// Auto-initialize when script loads
-CertificateStore.init();

@@ -196,12 +196,13 @@
         });
 
         // Form Submit
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = usernameInput.value;
             const password = passwordInput.value;
 
-            if (Auth.login(username, password)) {
+            const isAuth = await Auth.login(username, password);
+            if (isAuth) {
                 alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-2';
                 alertBox.innerHTML = '<i class="fas fa-check-circle"></i> Login successful! Redirecting to dashboard...';
                 alertBox.classList.remove('hidden');
